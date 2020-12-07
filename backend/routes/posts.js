@@ -26,12 +26,50 @@ router.post('/', authorize,  (request, response) => {
 
     // Endpoint to create a new post
 
+    console.log(request.body);
+    let text = request.body.text
+    let mediaUrl = request.body.media.url
+    let mediaType = request.body.media.type
+
+    if (!request.body.text && !mediaUrl) {
+        response.json({
+            code: "missing_input",
+            message: "Please provide input"
+        }, 400)
+        return;
+    }
+
+    if (mediaUrl && mediaType == null) {
+        response.json({
+            code: "missing_media_type",
+            message: "Please provide media type"
+        }, 400)
+        return;
+    }
+
+    let params = {
+        userId: request.currentUser.id,
+        text: text,
+        media: {
+            type: mediaType,
+            url: mediaUrl
+        }
+    };
+    PostModel.create(params, () => {
+        response.status(200).json([])
+    })
 });
 
 
 router.put('/:postId/likes', authorize, (request, response) => {
 
     // Endpoint for current user to like a post
+    userId = request.currentUser.id
+    postId = request.params.postId
+
+    PostModel.like(userId, postId, () => {
+        response.status(200).send("post is liked")
+    })
 });
 
 router.delete('/:postId/likes', authorize, (request, response) => {

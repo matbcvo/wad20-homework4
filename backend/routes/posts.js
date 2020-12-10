@@ -66,15 +66,56 @@ router.put('/:postId/likes', authorize, (request, response) => {
     // Endpoint for current user to like a post
     userId = request.currentUser.id
     postId = request.params.postId
-
-    PostModel.like(userId, postId, () => {
+    console.log("Liking"+request.params)
+    /*PostModel.like(userId, postId, () => {
         response.status(200).send("post is liked")
     })
+
+     */
+   PostModel.getLikesByUserIdAndPostId(userId, postId, (rows) => {
+
+        if (rows.length) {
+            response.status(409)
+                .json({
+                    code: 'already_liked',
+                    message: 'You have already liked this post'
+                });
+        } else {
+            PostModel.like( userId,postId, () => {
+                response.status(200).send("post is liked")
+            })
+        }
+    })
+
+
 });
 
 router.delete('/:postId/likes', authorize, (request, response) => {
 
     // Endpoint for current user to unlike a post
+    userId = request.currentUser.id
+    postId = request.params.postId
+    console.log("Unliking"+request.params)
+
+    /*PostModel.unlike(userId, postId, () => {
+        response.status(200).send("post is unliked")
+    })
+
+     */
+    PostModel.getLikesByUserIdAndPostId(userId,postId,(rows)=>{
+        if (!rows.length) {
+            response.status(409)
+                .json({
+                    code: 'not_liked',
+                    message: 'You have not liked this post'
+                });
+        }else {
+            PostModel.unlike(userId, postId, () => {
+                response.status(200).send("post is unliked")
+            })
+        }
+    })
+
 
 });
 

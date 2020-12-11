@@ -3,7 +3,8 @@ const JsonWebToken = require('jsonwebtoken');
 const SECRET = '3gJhqIYcMPHE60DoOUkvzLM6WDjOTzE4';
 
 const jwt = {
-    createAccessToken: (payload) => {
+    createAccessToken: (id) => {
+        let payload={id}
         return JsonWebToken.sign(payload, SECRET, {
             algorithm: "HS256",
             expiresIn: 600 //10 minutes

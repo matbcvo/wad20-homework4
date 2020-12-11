@@ -104,9 +104,10 @@ describe('Posts', () => {
         expect(true).toBe(true)
     });
 
-    it("renders correct amout of posts", ()=>{
+    it("renders correct amount of posts", ()=>{
         const testPostAmount = testData.length;
         const renderedAmount = wrapper.findAll('.post').length
+
         expect(renderedAmount).toEqual(testPostAmount)
     })
 });

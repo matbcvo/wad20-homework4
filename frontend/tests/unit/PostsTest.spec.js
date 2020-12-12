@@ -2,6 +2,7 @@ import {mount, createLocalVue} from '@vue/test-utils'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
 import Posts from "../../src/components/Posts.vue";
+import moment from 'moment'
 
 const localVue = createLocalVue();
 
@@ -109,5 +110,27 @@ describe('Posts', () => {
         const renderedAmount = wrapper.findAll('.post').length
 
         expect(renderedAmount).toEqual(testPostAmount)
+    })
+
+    it("post has media property, image or video tags are rendered depending on media.type property, or if media property is absent nothing is rendered", () => {
+        const getMedias = wrapper.findAll(".post-image").length;
+        const getTestMedias = testData.filter(testPost => testPost.media != null).length;
+        expect(getMedias).toBe(getTestMedias);
+
+        const getImages = wrapper.findAll(".post-image > img").length;
+        const getTestImages = testData.filter(testPost => testPost.media != null && testPost.media.type == "image").length;
+        expect(getImages).toBe(getTestImages);
+
+        const getVideos = wrapper.findAll(".post-image > video").length;
+        const getTestVideos = testData.filter(testPost => testPost.media != null && testPost.media.type == "video").length;
+        expect(getVideos).toBe(getTestVideos);
+    })
+
+    it("post create time is displayed in correct date format", () => {
+        for (let i = 0; i < testData.length; i++) {
+            const getDate = wrapper.find('.post-author > small').text();
+            const correctDateFormat = moment(testData[i].createTime).format('LLLL');
+            expect(getDate).toEqual(correctDateFormat);
+        }
     })
 });

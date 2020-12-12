@@ -127,10 +127,10 @@ describe('Posts', () => {
     })
 
     it("post create time is displayed in correct date format", () => {
+        const getDates = wrapper.findAll('.post-author > small');
         for (let i = 0; i < testData.length; i++) {
-            const getDate = wrapper.find('.post-author > small').text();
             const correctDateFormat = moment(testData[i].createTime).format('LLLL');
-            expect(getDate).toEqual(correctDateFormat);
+            expect(getDates.at(i).text()).toEqual(correctDateFormat);
         }
     })
 });
